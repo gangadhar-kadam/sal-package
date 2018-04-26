@@ -39,7 +39,7 @@ class Packages(Document):
 
 @frappe.whitelist()
 def package_buy(doc, method):
-	frappe.errprint("package")
+	#frappe.errprint("package")
 	# doc= json.loads(doc)
 	# for d in doc:
 	# 	frappe.errprint([d])
@@ -49,7 +49,7 @@ def package_buy(doc, method):
 	customer = doc.customer
 	tday= today()
 	flag =False
-	frappe.errprint("package")
+	#frappe.errprint("package")
 
 	pacakage_list =frappe.db.sql("select package_name from tabPackages",as_list=1)
 	pl= [x[0] for x in pacakage_list]
@@ -110,28 +110,20 @@ def package_buy(doc, method):
 
 
 def on_submit(doc, method):
-	frappe.errprint("in on on_submit")
 	acc = "Advances From Customer - DS"
 	sales ="Sales - DS"
 	total_qty = 0
-	if doc.package_name != "none":
-		frappe.errprint("has package")
+	if doc.package_name:
 		p = frappe.get_doc("Packages",doc.package_name)
 		cost = p.package_cost
-		frappe.errprint(p.package_cost)
 		total_services=0
 		for s in p.get("services"):
 			total_services +=s.number_of_services
-		frappe.errprint(total_services)
 		per_service_cost = float(cost)/float(total_services)
-		frappe.errprint(per_service_cost)
-		
-
+	
 		for it in doc.get("items"):
 			if it.amount ==0:
 				total_qty = total_qty +it.qty
-
-		frappe.errprint(["total qty",total_qty])
 		je = frappe.new_doc("Journal Entry") #create jv to add sales
 		je.posting_date = getdate()
 		je.company = doc.company
@@ -155,7 +147,7 @@ def on_submit(doc, method):
 
 @frappe.whitelist()
 def from_pos_call(doc,customer,item,qty):
-	frappe.errprint([customer,item])
+	#frappe.errprint([customer,item])
 	cwp = frappe.db.sql("select * from `tabCustomer wise package",as_list=1)
 	check= [x[0] for x in cwp]
 	# frappe.errprint(check)
